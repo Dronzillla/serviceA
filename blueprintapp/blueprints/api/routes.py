@@ -50,7 +50,15 @@ def list_alerts():
 @alerts.route("/alerts", methods=["POST"])
 def create_alert():
     data = request.get_json()
-    result = validate_alert(data=data)
+
+    # Check if data is None
+    if data is None:
+        return jsend_fail(
+            data_key="json",
+            data_value="Malformed or missing JSON payload",
+        )
+
+    result = validate_alert(data=data, partial=False)
     if not isinstance(result, dict):
         return result
     alert = db_create_alert(email=result["email"], threshold=result["threshold"])
@@ -92,13 +100,19 @@ def update_alert(alert_id: int):
         return jsend_fail(
             data_key="alert", data_value="Alert does not exist", status_code=404
         )
-    data = request.get_json() or {}
+    data = request.get_json()
 
     # Use the same validation helper as create; in update we allow partial
     # validation so callers can PATCH/PUT with a subset of fields.
     if request.method == "PUT":
+        # PUT means “replace the entire object”.
+        if data is None:
+            return jsend_fail("json", "Missing JSON payload")
         result = validate_alert(data, partial=False)
-    else:  # PATCH
+    else:
+        # PATCH means “update only what you send”.
+        if data is None:
+            data = {}
         result = validate_alert(data, partial=True)
 
     if not isinstance(result, dict):

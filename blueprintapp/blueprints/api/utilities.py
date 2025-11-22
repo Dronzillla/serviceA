@@ -62,12 +62,6 @@ def validate_alert(data, partial: bool = False) -> Union[dict, Response]:
 
     Returns either a dict with validated fields or a JSend `fail` Response.
     """
-    if data is None:
-        return jsend_fail(
-            data_key="json",
-            data_value="Malformed or missing JSON payload",
-        )
-
     email = data.get("email") if data is not None else None
     threshold = data.get("threshold") if data is not None else None
 
