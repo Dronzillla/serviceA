@@ -148,7 +148,7 @@ def list_alerts():
                 "created_at": a.created_at.isoformat() if a.created_at else None,
             }
         )
-    return jsend_success("alerts", result)
+    return jsend_success(data_key="alerts", data_value=result)
 
 
 @alerts.route("/alerts", methods=["POST"])
@@ -174,7 +174,9 @@ def create_alert():
 def get_alert(alert_id: int):
     a = db_get_alert_by_id(alert_id)
     if a is None:
-        return jsend_fail("alert", "Alert does not exist", status_code=404)
+        return jsend_fail(
+            data_key="alert", data_value="Alert does not exist", status_code=404
+        )
 
     alert_data = {
         "id": a.id,
@@ -184,7 +186,7 @@ def get_alert(alert_id: int):
         "triggered_at": a.triggered_at.isoformat() if a.triggered_at else None,
         "created_at": a.created_at.isoformat() if a.created_at else None,
     }
-    return jsend_success("alert", alert_data)
+    return jsend_success(data_key="alert", data_value=alert_data)
 
 
 @alerts.route("/alerts/<int:alert_id>", methods=["PUT", "PATCH"])

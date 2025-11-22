@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import pytest
 from blueprintapp.app import create_app, db
 from blueprintapp.blueprints.api.models import Alert
@@ -26,13 +26,13 @@ def init_database(app):
         email="user1@example.com",
         threshold=30000.0,
         active=True,
-        created_at=datetime.timezone.utc.now(),
+        created_at=datetime.now(timezone.utc),
     )
     alert2 = Alert(
         email="user2@example.com",
         threshold=35000.0,
         active=True,
-        created_at=datetime.timezone.utc.now(),
+        created_at=datetime.now(timezone.utc),
     )
 
     db.session.add_all([alert1, alert2])

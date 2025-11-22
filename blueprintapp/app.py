@@ -13,8 +13,6 @@ def create_app(config_class="config.config.DevelopmentConfig"):
     # Set up db
     db.init_app(app)
 
-    # Import and register API-only blueprint (we're converting to an API service)
-    # Do not register UI blueprints to disable frontend routes.
     from blueprintapp.blueprints.api.routes import alerts
 
     # Register the alerts API at /api

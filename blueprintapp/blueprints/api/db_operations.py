@@ -1,95 +1,16 @@
 from blueprintapp.app import db
-from sqlalchemy.orm import Session
-from datetime import datetime
-from typing import Optional
-
 from blueprintapp.blueprints.api.models import Alert
 
-# def db_read_all_todos() -> list[Todo]:
-#     """Read all 'Todo' records in database.
 
-#     Returns:
-#         list[Todo]: list of 'Todo' objects, that were uploaded in database.
-#     """
-#     todos = Todo.query.all()
-#     return todos
+def db_get_all_alerts(active_only=False) -> list[Alert]:
+    """Read all 'Alert' records in database.
 
+    Args:
+        active_only (bool, optional): Filter to return only active alerts. Defaults to False.
 
-# def db_create_new_todo_obj(todo: Todo, db_session: Session) -> Todo:
-#     """Records 'Todo' object to provided database session.
-
-#     Args:
-#         todo (Todo): 'Todo' object.
-#         db_session (Session): database session.
-
-#     Returns:
-#         Todo: created 'Todo' object.
-#     """
-#     db_session.add(todo)
-#     db_session.commit()
-#     return todo
-
-
-# def db_create_new_todo(title: str, description: str, duedate: datetime) -> Todo:
-#     """Create new 'Todo' record in database.
-
-#     Args:
-#         title (str): Title of a task.
-#         description (str): Description of a task.
-#         duedate (datetime): Date when the task should be completed.
-
-#     Returns:
-#         Todo: 'Todo' object
-#     """
-#     todo = Todo(title=title, description=description, duedate=duedate, done=False)
-#     db.session.add(todo)
-#     db.session.commit()
-#     return todo
-
-
-# def db_delete_todo(todo: Todo) -> None:
-#     """Deletes 'Todo' object from database.
-
-#     Args:
-#         todo (Todo): 'Todo' object to delete.
-#     """
-#     db.session.delete(todo)
-#     db.session.commit()
-
-
-# def db_read_todo_by_tid(tid: int) -> Optional[Todo]:
-#     """Search for 'Todo' record by provided id.
-
-#     Args:
-#         tid (int): Todo.tid
-
-#     Returns:
-#         Optional[Todo]: 'Todo' object if record was found, 'None' if no 'Todo' object matching the filters was found.
-#     """
-#     result = Todo.query.filter_by(tid=tid).one_or_none()
-#     return result
-
-
-# def db_update_todo(
-#     todo: Todo, title: str, description: str, duedate: datetime, done: bool
-# ) -> None:
-#     """Update 'Todo' object with provided values.
-
-#     Args:
-#         todo (Todo): Todo object
-#         title (str): new title
-#         description (str): new description
-#         duedate (datetime): new due date
-#         done (bool): new task completion status
-#     """
-#     todo.title = title
-#     todo.description = description
-#     todo.duedate = duedate
-#     todo.done = done
-#     db.session.commit()
-
-
-def db_get_all_alerts(active_only=False):
+    Returns:
+        list[Alert]: list of 'Alert' objects, that were uploaded in database.
+    """
     query = Alert.query
     if active_only:
         query = query.filter_by(active=True)
@@ -97,6 +18,15 @@ def db_get_all_alerts(active_only=False):
 
 
 def db_create_alert(email: str, threshold: float) -> Alert:
+    """Create new 'Alert' record in database.
+
+    Args:
+        email (str): Email address for alert notifications.
+        threshold (float): Threshold value that triggers the alert.
+
+    Returns:
+        Alert: 'Alert' object
+    """
     alert = Alert(email=email, threshold=threshold)
     db.session.add(alert)
     db.session.commit()
@@ -104,10 +34,26 @@ def db_create_alert(email: str, threshold: float) -> Alert:
 
 
 def db_get_alert_by_id(alert_id: int) -> Alert | None:
+    """Search for 'Alert' record by provided id.
+
+    Args:
+        alert_id (int): Alert.id
+
+    Returns:
+        Alert | None: 'Alert' object if record was found, 'None' if no 'Alert' object matching the filters was found.
+    """
     return Alert.query.filter_by(id=alert_id).one_or_none()
 
 
-def db_delete_alert(alert: Alert):
+def db_delete_alert(alert: Alert) -> None:
+    """Deletes 'Alert' object from database.
+
+    Args:
+        alert (Alert): 'Alert' object to delete.
+
+    Returns:
+        None
+    """
     db.session.delete(alert)
     db.session.commit()
 
@@ -120,7 +66,18 @@ def db_update_alert(
     active: bool | None = None,
     triggered_at=None
 ) -> Alert:
-    """Update fields on an alert and commit."""
+    """Update 'Alert' object with provided values.
+
+    Args:
+        alert (Alert): Alert object
+        email (str | None, optional): new email address
+        threshold (float | None, optional): new threshold value
+        active (bool | None, optional): new active status
+        triggered_at (optional): new triggered timestamp
+
+    Returns:
+        Alert: updated 'Alert' object
+    """
     if email is not None:
         alert.email = email
     if threshold is not None:

@@ -1,5 +1,5 @@
 from blueprintapp.app import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class Alert(db.Model):
@@ -11,7 +11,9 @@ class Alert(db.Model):
     active = db.Column(db.Boolean, default=True)
     triggered_at = db.Column(db.DateTime, nullable=True)
     # Use UTC timestamp on creation
-    created_at = db.Column(db.DateTime, default=datetime.timezone.utc.now)
+    created_at = db.Column(
+        db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     def __repr__(self):
         return f"{self.id}, {self.email}, {self.threshold}, {self.active}, {self.triggered_at}, {self.created_at}"
