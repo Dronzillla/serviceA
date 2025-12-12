@@ -8,6 +8,7 @@ from blueprintapp.blueprints.api.db_operations import (
 )
 from blueprintapp.blueprints.api.utilities import validate_alert
 from blueprintapp.blueprints.api.utilities import jsend_success, jsend_fail
+from datetime import datetime, timezone
 
 alerts = Blueprint("alerts", __name__)
 
@@ -121,6 +122,14 @@ def update_alert(alert_id: int):
     email = result.get("email") if "email" in result else None
     threshold = result.get("threshold") if "threshold" in result else None
     active = data.get("active")
+
+    # Another logic with triggered_at
+    # old_active = alert.active
+    # new_active = data.get("active")
+    # triggered_at = None
+    # # Only set triggered_at when transitioning from active → inactive
+    # if old_active is True and new_active is False:
+    #     triggered_at = datetime.now(timezone.utc)
 
     updated = db_update_alert(
         alert=alert, email=email, threshold=threshold, active=active
